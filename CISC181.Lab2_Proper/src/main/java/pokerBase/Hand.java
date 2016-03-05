@@ -244,8 +244,12 @@ public class Hand {
 		for (int i = 0; i < 4; i++) {
 			if (h.getCardsInHand().get(i).geteRank().getiRankNbr()
 					- h.getCardsInHand().get(i + 1).geteRank().getiRankNbr() == 1) {
-				check++;
+				check +=1;
 			}
+		}
+		System.out.println(check);
+		for (int i = 0; i < 5; i++) {
+			System.out.println(h.getCardsInHand().get(i).geteRank());
 		}
 		// Ace Checking (A,2,3,4,5)
 		if (check == 3 && h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()).geteRank() == eRank.ACE
@@ -261,8 +265,6 @@ public class Hand {
 			hs.setHiHand(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()).geteRank().getiRankNbr());
 			hs.setLoHand(0);
 		}
-
-		hs.setHandStrength(eHandStrength.Straight.getHandStrength());
 		return bHandCheck;
 	}
 

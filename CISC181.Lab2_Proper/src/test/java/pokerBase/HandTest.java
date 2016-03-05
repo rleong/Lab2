@@ -119,7 +119,101 @@ public class HandTest {
 		assertEquals(hs.getKickers().get(eCardNo.FirstCard.getCardNo()).geteRank(), eRank.KING);
 	}
 	
+//	@Test
+//	public void TestRoyalFlush() {
+//		
+//		HandScore hs = new HandScore();
+//		ArrayList<Card> RoyalFlush = new ArrayList<Card>();
+//
+//		RoyalFlush.add(new Card(eSuit.CLUBS,eRank.ACE,0));
+//	
+//		RoyalFlush.add(new Card(eSuit.CLUBS,eRank.KING,0));
+//
+//		RoyalFlush.add(new Card(eSuit.CLUBS,eRank.QUEEN,0));	
+//
+//		RoyalFlush.add(new Card(eSuit.CLUBS,eRank.JACK,0));
+//		RoyalFlush.add(new Card(eSuit.CLUBS,eRank.TEN,0));
+//		Hand h = new Hand();
+//		h = SetHand(RoyalFlush,h);
+//		
+//		boolean bActualIsHandRoyalFlush= Hand.isHandRoyalFlush(h, hs);
+//		boolean bExpectedIsHandRoyalFlush = true;
+//		
+//		//	Did this evaluate to Four of a Kind?
+//		//assertEquals(bActualIsHandRoyalFlush,bExpectedIsHandRoyalFlush);		
+//		//	Was the four of a kind an Ace?
+//		//assertEquals(hs.getHiHand(),eRank.ACE.getiRankNbr());		
+//		//	RF has no kickers
+////		assertEquals(hs.getKickers().get(eCardNo.FirstCard.getCardNo()).geteSuit(), eSuit.CLUBS);
+//	}
 	
+	
+	@Test
+	public void TestHandStraight() {
+		
+		HandScore hs = new HandScore();
+		ArrayList<Card> HandStraight = new ArrayList<Card>();
+		HandStraight.add(new Card(eSuit.CLUBS,eRank.THREE,0));
+		HandStraight.add(new Card(eSuit.HEARTS,eRank.FOUR,0));
+		HandStraight.add(new Card(eSuit.CLUBS,eRank.FIVE,0));		
+		HandStraight.add(new Card(eSuit.CLUBS,eRank.SIX,0));
+		HandStraight.add(new Card(eSuit.CLUBS,eRank.SEVEN,0));
+		
+		Hand h = new Hand();
+		h = SetHand(HandStraight,h);
+		
+		try {
+			h = Hand.EvaluateHand(h);
+		} catch (HandException e) {			
+			e.printStackTrace();
+			fail("TestFourOfAKindEval failed");
+		}
+		
+		boolean bActualIsHandStraight = Hand.isHandStraight(h, hs);
+		boolean bExpectedIsHandStraight = true;
+		
+		//	Did this evaluate to Four of a Kind?
+		assertEquals(bActualIsHandStraight,bExpectedIsHandStraight);		
+		//	Was the four of a kind an Ace?
+		assertEquals(hs.getHiHand(),eRank.SEVEN.getiRankNbr());		
+		//No Kickers
+		
+	}
+	
+	
+	
+/*
+ * 
+                      _____ 
+                   ,-'     `._ 
+                 ,'           `.        ,-. 
+               ,'               \       ),.\ 
+     ,.       /                  \     /(  \; 
+    /'\\     ,o.        ,ooooo.   \  ,'  `-') 
+    )) )`. d8P"Y8.    ,8P"""""Y8.  `'  .--"' 
+   (`-'   `Y'  `Y8    dP       `'     / 
+    `----.(   __ `    ,' ,---.       ( 
+           ),--.`.   (  ;,---.        ) 
+          / \X_,' )   \  \X_,'        | 
+         ;  `-- ,'       `---'        | 
+         |    -'         `.           | 
+        _;    ,            )          : 
+     _.'|     `.:._   ,.::" `..       | 
+  --'   |   .'     """         `      |`. 
+        |  :;      :   :     _.       |`.`.-'--. 
+        |  ' .     :   :__.,'|/       |  \ 
+        `     \--.__.-'|_|_|-/        /   ) 
+         \     \_   `--^"__,'        ,    | 
+         ;  `    `--^---'          ,'     | 
+          \  `                    /      / 
+           \   `    _ _          / 
+            \           `       / 
+             \           '    ,' 
+              `.       ,   _,' 
+                `-.___.---' 
+ * 
+ * 
+ */
 	public void TestFourOfAKindEval() {
 		
 		ArrayList<Card> FourOfAKind = new ArrayList<Card>();
