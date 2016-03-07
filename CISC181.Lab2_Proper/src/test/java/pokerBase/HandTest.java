@@ -584,6 +584,137 @@ public class HandTest {
 		assertEquals(hs.getKickers().get(eCardNo.FirstCard.getCardNo()).geteRank(), eRank.QUEEN);
 	}
 	
+	@Test // Test for Highcard
+	public void TestHighCardEval() {
+		
+		ArrayList<Card> HighCard = new ArrayList<Card>();
+		HighCard.add(new Card(eSuit.CLUBS,eRank.KING,0));
+		HighCard.add(new Card(eSuit.HEARTS,eRank.TEN,0));
+		HighCard.add(new Card(eSuit.DIAMONDS,eRank.NINE,0));
+		HighCard.add(new Card(eSuit.CLUBS,eRank.SIX,0));
+		HighCard.add(new Card(eSuit.SPADES,eRank.FOUR,0));
+		
+		Hand h = new Hand();
+		h = SetHand(HighCard,h);
+		
+		try {
+			h = Hand.EvaluateHand(h);
+		} catch (HandException e) {			
+			e.printStackTrace();
+			fail("TestHighCardEval failed");
+		}
+		HandScore hs = h.getHandScore();
+		boolean bActualIsHTestHighCardEval = Hand.isHandHighCard(h, hs);
+		boolean bExpectedTestHighCardEval = true;
+		
+		//	Did this evaluate to Four of a Kind?
+		assertEquals(bActualIsHTestHighCardEval,bExpectedTestHighCardEval);		
+		//	Was the four of a kind an Ace?
+		assertEquals(hs.getHiHand(),eRank.KING.getiRankNbr());		
+		//	FOAK has one kicker.  Was it a Club?
+		assertEquals(hs.getKickers().get(eCardNo.SecondCard.getCardNo()).geteSuit(), eSuit.DIAMONDS);
+		//	FOAK has one kicker.  Was it a King?		
+		assertEquals(hs.getKickers().get(eCardNo.SecondCard.getCardNo()).geteRank(), eRank.NINE);
+	}
+	
+	@Test // Test for Pair
+	public void TestPairEval() {
+		
+		ArrayList<Card> Pair = new ArrayList<Card>();
+		Pair.add(new Card(eSuit.CLUBS,eRank.JACK,0));
+		Pair.add(new Card(eSuit.HEARTS,eRank.JACK,0));
+		Pair.add(new Card(eSuit.DIAMONDS,eRank.NINE,0));
+		Pair.add(new Card(eSuit.CLUBS,eRank.SIX,0));
+		Pair.add(new Card(eSuit.SPADES,eRank.THREE,0));
+		
+		Hand h = new Hand();
+		h = SetHand(Pair,h);
+		
+		try {
+			h = Hand.EvaluateHand(h);
+		} catch (HandException e) {			
+			e.printStackTrace();
+			fail("TestPairEval failed");
+		}
+		HandScore hs = h.getHandScore();
+		boolean bActualIsHTestPairEval = Hand.isHandPair(h, hs);
+		boolean bExpectedTestPairEval = true;
+		
+		//	Did this evaluate to Four of a Kind?
+		assertEquals(bActualIsHTestPairEval,bExpectedTestPairEval);		
+		//	Was the four of a kind an Ace?
+		assertEquals(hs.getHiHand(),eRank.JACK.getiRankNbr());		
+		//	FOAK has one kicker.  Was it a Club?
+		assertEquals(hs.getKickers().get(eCardNo.SecondCard.getCardNo()).geteSuit(), eSuit.CLUBS);
+		//	FOAK has one kicker.  Was it a King?		
+		assertEquals(hs.getKickers().get(eCardNo.SecondCard.getCardNo()).geteRank(), eRank.SIX);
+	}	
+	
+	@Test // Test for Pair, the case of the hand is a two pair
+	public void TestPairEval_twopair() {
+		
+		ArrayList<Card> Pair = new ArrayList<Card>();
+		Pair.add(new Card(eSuit.CLUBS,eRank.JACK,0));
+		Pair.add(new Card(eSuit.HEARTS,eRank.JACK,0));
+		Pair.add(new Card(eSuit.DIAMONDS,eRank.NINE,0));
+		Pair.add(new Card(eSuit.CLUBS,eRank.NINE,0));
+		Pair.add(new Card(eSuit.SPADES,eRank.THREE,0));
+		
+		Hand h = new Hand();
+		h = SetHand(Pair,h);
+		
+		try {
+			h = Hand.EvaluateHand(h);
+		} catch (HandException e) {			
+			e.printStackTrace();
+			fail("TestPairEval failed");
+		}
+		HandScore hs = h.getHandScore();
+		boolean bActualIsHTestPairEval = Hand.isHandPair(h, hs);
+		boolean bExpectedTestPairEval = false;
+		
+		//	Did this evaluate to Four of a Kind?
+		assertEquals(bActualIsHTestPairEval,bExpectedTestPairEval);		
+		//	Was the four of a kind an Ace?
+		assertEquals(hs.getHiHand(),eRank.JACK.getiRankNbr());		
+		//	FOAK has one kicker.  Was it a Club?
+		assertEquals(hs.getKickers().get(eCardNo.FirstCard.getCardNo()).geteSuit(), eSuit.SPADES);
+		//	FOAK has one kicker.  Was it a King?		
+		assertEquals(hs.getKickers().get(eCardNo.FirstCard.getCardNo()).geteRank(), eRank.THREE);
+	}
+	
+	@Test // Test for Pair, the case of the hand is a two pair
+	public void TestPairEval_fullhouse() {
+		
+		ArrayList<Card> Pair = new ArrayList<Card>();
+		Pair.add(new Card(eSuit.CLUBS,eRank.JACK,0));
+		Pair.add(new Card(eSuit.HEARTS,eRank.JACK,0));
+		Pair.add(new Card(eSuit.DIAMONDS,eRank.NINE,0));
+		Pair.add(new Card(eSuit.CLUBS,eRank.NINE,0));
+		Pair.add(new Card(eSuit.SPADES,eRank.JACK,0));
+		
+		Hand h = new Hand();
+		h = SetHand(Pair,h);
+		
+		try {
+			h = Hand.EvaluateHand(h);
+		} catch (HandException e) {			
+			e.printStackTrace();
+			fail("TestPairEval failed");
+		}
+		HandScore hs = h.getHandScore();
+		boolean bActualIsHTestPairEval = Hand.isHandPair(h, hs);
+		boolean bExpectedTestPairEval = false;
+		
+		//	Did this evaluate to Four of a Kind?
+		assertEquals(bActualIsHTestPairEval,bExpectedTestPairEval);		
+		//	Was the four of a kind an Ace?
+		assertEquals(hs.getHiHand(),eRank.JACK.getiRankNbr());		
+//		//	FOAK has one kicker.  Was it a Club?
+//		assertEquals(hs.getKickers().get(eCardNo.FirstCard.getCardNo()).geteSuit(), eSuit.SPADES);
+//		//	FOAK has one kicker.  Was it a King?		
+//		assertEquals(hs.getKickers().get(eCardNo.FirstCard.getCardNo()).geteRank(), eRank.THREE);
+	}
 //  Previously from the Professor's code
 //	public void TestFourOfAKindEval() {
 //		
