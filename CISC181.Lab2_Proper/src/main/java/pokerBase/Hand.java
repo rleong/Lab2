@@ -254,11 +254,11 @@ public class Hand {
 				check +=1;
 			}
 		}
-		//Testing (not part of the code)
-		System.out.println(check);
+		//For Testing Purposes Only (not part of the actual method and stuff ahhahahahahahahahahahahaa!!!! ^_^ ^_^ _^ _^^_ ^_^_^_^_^_ :)))))))
+		/*System.out.println(check);
 		for (int i = 0; i < 5; i++) {
 			System.out.println(h.getCardsInHand().get(i).geteRank());
-		}
+		}*/
 		// Ace Checking, checks if there is already a straight excluding the Ace,
 		// Then checks if the last card is a two, then this will recognize that
 		// this hand is indeed a straight, and sets the highest value to Four rather
@@ -311,7 +311,7 @@ public class Hand {
 					.get(eCardNo.FifthCard.getCardNo()).geteRank()) {
 				bHandCheck = true;
 				hs.setHandStrength(eHandStrength.ThreeOfAKind.getHandStrength());
-				hs.setHiHand(h.getCardsInHand().get(eCardNo.SecondCard.getCardNo()).geteRank().getiRankNbr());
+				hs.setHiHand(h.getCardsInHand().get(eCardNo.ThirdCard.getCardNo()).geteRank().getiRankNbr());
 				hs.setLoHand(0);
 				ArrayList<Card> kickers = new ArrayList<Card>();
 				kickers.add(h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()));
@@ -371,11 +371,11 @@ public class Hand {
 
 	public static boolean isHandPair(Hand h, HandScore hs) {
 		boolean bHandCheck = false;
-		int checkpoint = 0;
+		int checkpoint = -1;
 		ArrayList<Card> kickers = new ArrayList<Card>();
 		
 		//Makes sure the hand isn't a two pair and is also not a full house.
-		if(!h.isHandTwoPair(h, hs) && !h.isHandFullHouse(h, hs)){
+		if(!h.isHandTwoPair(h, hs) && !Hand.isHandFullHouse(h, hs)){
 			//Loops through the hand, and figures out when the first two cards are 
 			//the same, and marks where that "checkpoint" is
 			for (int i = 0; i < 4; i++) {
@@ -394,13 +394,17 @@ public class Hand {
 					kickers.add(h.getCardsInHand().get(j));
 				}
 			}
-			hs.setKickers(kickers);
-			//High hand would be the pair's value, which is the checkpoint
-			hs.setHiHand(h.getCardsInHand().get(checkpoint).geteRank().getiRankNbr());
-			//Low hand is the highest value of the kicker's pile
-			hs.setLoHand(h.getCardsInHand().get(kickers.size()-2).geteRank().getiRankNbr());
-			hs.setHandStrength(eHandStrength.Pair.getHandStrength());
-			bHandCheck = true;
+			//This way, we'll know for sure that this hand
+			//has a pair! (And won't get confused with
+			//a High Hand.
+			if (checkpoint != -1){
+				hs.setKickers(kickers);
+				//High hand would be the pair's value, which is the checkpoint
+				hs.setHiHand(h.getCardsInHand().get(checkpoint).geteRank().getiRankNbr());
+				hs.setLoHand(0);
+				hs.setHandStrength(eHandStrength.Pair.getHandStrength());
+				bHandCheck = true;
+			}
 		}
 		return bHandCheck;
 	}
@@ -408,14 +412,17 @@ public class Hand {
 	public static boolean isHandHighCard(Hand h, HandScore hs) {
 		boolean bHandCheck = false;
 		//If it's not any of the above hand methods, it becomes the high card.
-		if(!h.isHandFiveOfAKind(h, hs) && !h.isHandFlush(h, hs) && !h.isHandFourOfAKind(h, hs) && !h.isHandFullHouse(h, hs)
-				&& !h.isHandPair(h, hs) && !h.isHandRoyalFlush(h, hs) && !h.isHandStraight(h, hs) && !h.isHandStraightFlush(h, hs)
+		if(!h.isHandFiveOfAKind(h, hs) && !h.isHandFlush(h, hs) && 
+				!h.isHandFourOfAKind(h, hs) && !h.isHandFullHouse(h, hs)
+				&& !h.isHandPair(h, hs) && !h.isHandRoyalFlush(h, hs) && 
+				!h.isHandStraight(h, hs) && !h.isHandStraightFlush(h, hs)
 				&& !h.isHandThreeOfAKind(h, hs) && !h.isHandTwoPair(h, hs)){
 			hs.setHandStrength(eHandStrength.HighCard.getHandStrength());
 			bHandCheck = true;
 			hs.setHiHand(h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank().getiRankNbr());
-			hs.setLoHand(h.getCardsInHand().get(eCardNo.SecondCard.getCardNo()).geteRank().getiRankNbr());
+			hs.setLoHand(0);
 			ArrayList<Card> kickers = new ArrayList<Card>();
+			kickers.add(h.getCardsInHand().get(eCardNo.SecondCard.getCardNo()));
 			kickers.add(h.getCardsInHand().get(eCardNo.ThirdCard.getCardNo()));
 			kickers.add(h.getCardsInHand().get(eCardNo.FourthCard.getCardNo()));
 			kickers.add(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()));
