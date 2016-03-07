@@ -138,12 +138,13 @@ public class Hand {
 		// and also checks if the hand is a royal flush by looking at the
 		// fourth card and seeing if it's a king or not.
 		if (h.isHandStraight(h, hs) && h.isHandFlush(h, hs)
-				&& h.getCardsInHand().get(eCardNo.FourthCard.getCardNo()).geteRank() == eRank.KING) {
+				&& h.getCardsInHand().get(eCardNo.SecondCard.getCardNo()).geteRank() == eRank.KING) {
 			hs.setHandStrength(eHandStrength.RoyalFlush.getHandStrength());
 			// Will we compare the suit value rather than the rank number???????
-			hs.setHiHand(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()).geteSuit().getiSuitNbr());
+			hs.setHiHand(h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank().getiRankNbr());
 			hs.setLoHand(0);
 			bHandCheck = true;
+			//No Kickers
 		}
 		return bHandCheck;
 	}
@@ -154,11 +155,12 @@ public class Hand {
 		// and also checks if the hand is not a royal flush by looking at the
 		// fourth card and seeing if it's a king or not.
 		if (h.isHandStraight(h, hs) && h.isHandFlush(h, hs)
-				&& h.getCardsInHand().get(eCardNo.FourthCard.getCardNo()).geteRank() != eRank.KING) {
+				&& h.getCardsInHand().get(eCardNo.SecondCard.getCardNo()).geteRank() != eRank.KING) {
 			hs.setHandStrength(eHandStrength.StraightFlush.getHandStrength());
-			hs.setHiHand(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()).geteRank().getiRankNbr());
+			hs.setHiHand(h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank().getiRankNbr());
 			hs.setLoHand(0);
 			bHandCheck = true;
+			//No Kickers
 		}
 
 		return bHandCheck;
@@ -194,7 +196,8 @@ public class Hand {
 	public static boolean isHandFullHouse(Hand h, HandScore hs) {
 
 		boolean bHandCheck = false;
-
+		
+		//Checks for the first 3 cards and remaining 2 cards
 		if (h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank() == h.getCardsInHand()
 				.get(eCardNo.ThirdCard.getCardNo()).geteRank()
 				&& h.getCardsInHand().get(eCardNo.FourthCard.getCardNo()).geteRank() == h.getCardsInHand()
@@ -203,7 +206,7 @@ public class Hand {
 			hs.setHandStrength(eHandStrength.FullHouse.getHandStrength());
 			hs.setHiHand(h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank().getiRankNbr());
 			hs.setLoHand(h.getCardsInHand().get(eCardNo.FourthCard.getCardNo()).geteRank().getiRankNbr());
-
+		//Checks for the last 3 cards and the remaining 2 cards
 		} else if (h.getCardsInHand().get(eCardNo.ThirdCard.getCardNo()).geteRank() == h.getCardsInHand()
 				.get(eCardNo.FifthCard.getCardNo()).geteRank()
 				&& h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank() == h.getCardsInHand()
@@ -218,7 +221,9 @@ public class Hand {
 
 	public static boolean isHandFlush(Hand h, HandScore hs) {
 		boolean bHandCheck = false;
-
+		
+		//Checks if the suit of the first card matches the suit of the remaining
+		//Cards.
 		for (int i = 1; i < 5; i++) {
 			if (h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteSuit() != h.getCardsInHand().get(i)
 					.geteSuit()) {
@@ -230,7 +235,7 @@ public class Hand {
 		}
 		if (bHandCheck && !h.isHandStraight(h, hs)) {
 			hs.setHandStrength(eHandStrength.Flush.getHandStrength());
-			hs.setHiHand(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()).geteRank().getiRankNbr());
+			hs.setHiHand(h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank().getiRankNbr());
 			hs.setLoHand(0);
 		}
 		return bHandCheck;
@@ -240,29 +245,36 @@ public class Hand {
 
 		boolean bHandCheck = false;
 		int check = 0;
-
+		
+		//Goes through all the indexes and makes sure that each card is
+		//1 below the card prior in terms of rank
 		for (int i = 0; i < 4; i++) {
 			if (h.getCardsInHand().get(i).geteRank().getiRankNbr()
 					- h.getCardsInHand().get(i + 1).geteRank().getiRankNbr() == 1) {
 				check +=1;
 			}
 		}
+		//Testing (not part of the code)
 		System.out.println(check);
 		for (int i = 0; i < 5; i++) {
 			System.out.println(h.getCardsInHand().get(i).geteRank());
 		}
-		// Ace Checking (A,2,3,4,5)
-		if (check == 3 && h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()).geteRank() == eRank.ACE
-				&& h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank() == eRank.TWO) {
+		// Ace Checking, checks if there is already a straight excluding the Ace,
+		// Then checks if the last card is a two, then this will recognize that
+		// this hand is indeed a straight, and sets the highest value to Four rather
+		// than Ace.
+		if (check == 3 && h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank() == eRank.ACE
+				&& h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()).geteRank() == eRank.TWO) {
 			check = 4;
 			bHandCheck = true;
 			hs.setHandStrength(eHandStrength.Straight.getHandStrength());
-			hs.setHiHand(h.getCardsInHand().get(eCardNo.FourthCard.getCardNo()).geteRank().getiRankNbr());
+			hs.setHiHand(h.getCardsInHand().get(eCardNo.SecondCard.getCardNo()).geteRank().getiRankNbr());
 			hs.setLoHand(0);
+		//Otherwise, it is a regular straight
 		} else if (check == 4) {
 			bHandCheck = true;
 			hs.setHandStrength(eHandStrength.Straight.getHandStrength());
-			hs.setHiHand(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()).geteRank().getiRankNbr());
+			hs.setHiHand(h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank().getiRankNbr());
 			hs.setLoHand(0);
 		}
 		return bHandCheck;
@@ -270,7 +282,9 @@ public class Hand {
 
 	public static boolean isHandThreeOfAKind(Hand h, HandScore hs) {
 		boolean bHandCheck = false;
+		//Makes sure that the hand is not accidentally a Full house
 		if(!h.isHandFullHouse(h, hs)){
+			// First three are the same, while the last two are not
 			if (h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank() == h.getCardsInHand()
 					.get(eCardNo.ThirdCard.getCardNo()).geteRank()) {
 				bHandCheck = true;
@@ -281,6 +295,7 @@ public class Hand {
 				kickers.add(h.getCardsInHand().get(eCardNo.FourthCard.getCardNo()));
 				kickers.add(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()));
 				hs.setKickers(kickers);
+			// Middle three are the same, while the end and first ones are not
 			} else if (h.getCardsInHand().get(eCardNo.SecondCard.getCardNo()).geteRank() == h.getCardsInHand()
 					.get(eCardNo.FourthCard.getCardNo()).geteRank()) {
 				bHandCheck = true;
@@ -291,6 +306,7 @@ public class Hand {
 				kickers.add(h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()));
 				kickers.add(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()));
 				hs.setKickers(kickers);
+			// Last three are the same while the first two are not
 			} else if (h.getCardsInHand().get(eCardNo.ThirdCard.getCardNo()).geteRank() == h.getCardsInHand()
 					.get(eCardNo.FifthCard.getCardNo()).geteRank()) {
 				bHandCheck = true;
@@ -309,37 +325,42 @@ public class Hand {
 
 	public static boolean isHandTwoPair(Hand h, HandScore hs) {
 		boolean bHandCheck = false;
+		//Makes sure that this is not a four of a kind (e.x. 2 2 2 2 4, in which both 2 and 2
+		//pairs are the "same" but actually all four 2's are the same.
 		if(!h.isHandFourOfAKind(h, hs)){
+			//First and Second pair are the same, while last is not
 			if (h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank() == h.getCardsInHand()
 					.get(eCardNo.SecondCard.getCardNo()).geteRank() &&
 					h.getCardsInHand().get(eCardNo.ThirdCard.getCardNo()).geteRank() == h.getCardsInHand()
 					.get(eCardNo.FourthCard.getCardNo()).geteRank()) {
 				bHandCheck = true;
 				hs.setHandStrength(eHandStrength.TwoPair.getHandStrength());
-				hs.setHiHand(h.getCardsInHand().get(eCardNo.FourthCard.getCardNo()).geteRank().getiRankNbr());
-				hs.setLoHand(h.getCardsInHand().get(eCardNo.SecondCard.getCardNo()).geteRank().getiRankNbr());
+				hs.setHiHand(h.getCardsInHand().get(eCardNo.SecondCard.getCardNo()).geteRank().getiRankNbr());
+				hs.setLoHand(h.getCardsInHand().get(eCardNo.FourthCard.getCardNo()).geteRank().getiRankNbr());
 				ArrayList<Card> kickers = new ArrayList<Card>();
 				kickers.add(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()));
 				hs.setKickers(kickers);
+				//Second and Third pair are the same, while first is not
 			} else if (h.getCardsInHand().get(eCardNo.SecondCard.getCardNo()).geteRank() == h.getCardsInHand()
 					.get(eCardNo.ThirdCard.getCardNo()).geteRank() &&
 					h.getCardsInHand().get(eCardNo.FourthCard.getCardNo()).geteRank() == h.getCardsInHand()
 					.get(eCardNo.FifthCard.getCardNo()).geteRank()) {
 				bHandCheck = true;
 				hs.setHandStrength(eHandStrength.TwoPair.getHandStrength());
-				hs.setHiHand(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()).geteRank().getiRankNbr());
-				hs.setLoHand(h.getCardsInHand().get(eCardNo.ThirdCard.getCardNo()).geteRank().getiRankNbr());
+				hs.setHiHand(h.getCardsInHand().get(eCardNo.ThirdCard.getCardNo()).geteRank().getiRankNbr());
+				hs.setLoHand(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()).geteRank().getiRankNbr());
 				ArrayList<Card> kickers = new ArrayList<Card>();
 				kickers.add(h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()));
 				hs.setKickers(kickers);
+				//First and Third pair are the same, while middle is not
 			} else if (h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank() == h.getCardsInHand()
 					.get(eCardNo.SecondCard.getCardNo()).geteRank() &&
 					h.getCardsInHand().get(eCardNo.FourthCard.getCardNo()).geteRank() == h.getCardsInHand()
 					.get(eCardNo.FifthCard.getCardNo()).geteRank()) {
 				bHandCheck = true;
 				hs.setHandStrength(eHandStrength.TwoPair.getHandStrength());
-				hs.setHiHand(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()).geteRank().getiRankNbr());
-				hs.setLoHand(h.getCardsInHand().get(eCardNo.SecondCard.getCardNo()).geteRank().getiRankNbr());
+				hs.setHiHand(h.getCardsInHand().get(eCardNo.SecondCard.getCardNo()).geteRank().getiRankNbr());
+				hs.setLoHand(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()).geteRank().getiRankNbr());
 				ArrayList<Card> kickers = new ArrayList<Card>();
 				kickers.add(h.getCardsInHand().get(eCardNo.ThirdCard.getCardNo()));
 				hs.setKickers(kickers);
@@ -352,13 +373,19 @@ public class Hand {
 		boolean bHandCheck = false;
 		int checkpoint = 0;
 		ArrayList<Card> kickers = new ArrayList<Card>();
+		
+		//Makes sure the hand isn't a two pair and is also not a full house.
 		if(!h.isHandTwoPair(h, hs) && !h.isHandFullHouse(h, hs)){
+			//Loops through the hand, and figures out when the first two cards are 
+			//the same, and marks where that "checkpoint" is
 			for (int i = 0; i < 4; i++) {
 				if (h.getCardsInHand().get(i).geteRank() ==
 						h.getCardsInHand().get(i + 1).geteRank()) {
 					checkpoint = i;
 				}
 			}
+			//Loops through the hand again, but this time adding all cards other than
+			//the two cards that are the same, into the kickers.
 			for (int j = 0; j < 5; j++){
 				if(j == checkpoint || j == checkpoint + 1){
 					continue;
@@ -368,8 +395,10 @@ public class Hand {
 				}
 			}
 			hs.setKickers(kickers);
+			//High hand would be the pair's value, which is the checkpoint
 			hs.setHiHand(h.getCardsInHand().get(checkpoint).geteRank().getiRankNbr());
-			hs.setLoHand(h.getCardsInHand().get(kickers.size()-1).geteRank().getiRankNbr());
+			//Low hand is the highest value of the kicker's pile
+			hs.setLoHand(h.getCardsInHand().get(kickers.size()-2).geteRank().getiRankNbr());
 			hs.setHandStrength(eHandStrength.Pair.getHandStrength());
 			bHandCheck = true;
 		}
@@ -378,17 +407,18 @@ public class Hand {
 
 	public static boolean isHandHighCard(Hand h, HandScore hs) {
 		boolean bHandCheck = false;
+		//If it's not any of the above hand methods, it becomes the high card.
 		if(!h.isHandFiveOfAKind(h, hs) && !h.isHandFlush(h, hs) && !h.isHandFourOfAKind(h, hs) && !h.isHandFullHouse(h, hs)
 				&& !h.isHandPair(h, hs) && !h.isHandRoyalFlush(h, hs) && !h.isHandStraight(h, hs) && !h.isHandStraightFlush(h, hs)
 				&& !h.isHandThreeOfAKind(h, hs) && !h.isHandTwoPair(h, hs)){
 			hs.setHandStrength(eHandStrength.HighCard.getHandStrength());
 			bHandCheck = true;
-			hs.setHiHand(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()).geteRank().getiRankNbr());
-			hs.setLoHand(h.getCardsInHand().get(eCardNo.FourthCard.getCardNo()).geteRank().getiRankNbr());
+			hs.setHiHand(h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()).geteRank().getiRankNbr());
+			hs.setLoHand(h.getCardsInHand().get(eCardNo.SecondCard.getCardNo()).geteRank().getiRankNbr());
 			ArrayList<Card> kickers = new ArrayList<Card>();
-			kickers.add(h.getCardsInHand().get(eCardNo.FirstCard.getCardNo()));
-			kickers.add(h.getCardsInHand().get(eCardNo.SecondCard.getCardNo()));
 			kickers.add(h.getCardsInHand().get(eCardNo.ThirdCard.getCardNo()));
+			kickers.add(h.getCardsInHand().get(eCardNo.FourthCard.getCardNo()));
+			kickers.add(h.getCardsInHand().get(eCardNo.FifthCard.getCardNo()));
 			hs.setKickers(kickers);
 		}
 		return bHandCheck;
